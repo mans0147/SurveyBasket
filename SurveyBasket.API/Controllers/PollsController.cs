@@ -26,4 +26,20 @@ public class PollsController(IPollSerivce pollSerivce) : ControllerBase
         var newPoll = _pollService.Create(request);
         return CreatedAtAction(nameof(Get), new {id = newPoll.Id}, newPoll);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, [FromBody] Poll request)
+    {
+        var poll = _pollService.Update(id, request);
+
+        return poll is false ? NotFound() : NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Delete(int id)
+    {
+        var poll = _pollService.Delete(id);
+
+        return poll is false ? NotFound() : NoContent();
+    }
 }

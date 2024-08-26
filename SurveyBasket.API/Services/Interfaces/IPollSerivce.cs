@@ -5,6 +5,6 @@ public interface IPollSerivce
     IEnumerable<Poll> GetAll();
     Poll? Get(int id);
     Poll Create(Poll poll);
-    //Poll Update(Poll poll);
-    //void Delete(int id);
+    bool Update(int id, Poll poll);
+    bool Delete(int id);
 }
