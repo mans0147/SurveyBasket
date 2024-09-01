@@ -10,3 +10,4 @@ global using SurveyBasket.API.Contracts.Responses;
 global using FluentValidation;
 global using Microsoft.EntityFrameworkCore; 
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using SurveyBasket.API.Persistence;
