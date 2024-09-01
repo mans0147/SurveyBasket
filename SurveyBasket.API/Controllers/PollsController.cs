@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-namespace SurveyBasket.API.Controllers;
+﻿namespace SurveyBasket.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

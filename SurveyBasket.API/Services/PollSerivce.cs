@@ -6,12 +6,12 @@ public class PollSerivce : IPollSerivce
        new Poll{
             Id = 1,
             Title = "Poll One",
-            Description = "Poll One Description"
+            Summary = "Poll One Description"
        },
         new Poll{
             Id = 2,
             Title = "Poll Two",
-            Description = "Poll Two Description"
+            Summary = "Poll Two Description"
         }
 
        ];
@@ -35,7 +35,7 @@ public class PollSerivce : IPollSerivce
             return false;
 
         currentPoll.Title = poll.Title;
-        currentPoll.Description = poll.Description;
+        currentPoll.Summary = poll.Summary;
 
         return true;
     }
