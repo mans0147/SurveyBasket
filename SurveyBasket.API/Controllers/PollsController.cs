@@ -1,4 +1,6 @@
-﻿namespace SurveyBasket.API.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace SurveyBasket.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -9,34 +11,46 @@ public class PollsController(IPollSerivce pollSerivce) : ControllerBase
     [HttpGet("")]
     public IActionResult GetAll()
     {
-        return Ok(_pollService.GetAll());
+        var polls = _pollService.GetAll();
+        var response = polls.Adapt<IEnumerable<PollResponse>>();
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
-    public IActionResult Get(int id)
+    public IActionResult Get([FromRoute] int id)
     {
         var poll = _pollService.Get(id);
 
-        return poll is null ? NotFound(): Ok(poll);
+        if (poll is null)
+            return NotFound();
+
+        var response = poll.Adapt<PollResponse>();
+
+        return Ok(response);
     }
 
     [HttpPost("")]
-    public IActionResult Create([FromBody] Poll request)
+    public IActionResult Create([FromBody] CreatePollRequest request)
     {
-        var newPoll = _pollService.Create(request);
+        var newPoll = _pollService.Create(request.Adapt<Poll>());
         return CreatedAtAction(nameof(Get), new {id = newPoll.Id}, newPoll);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Poll request)
+    public IActionResult Update([FromRoute] int id, [FromBody] CreatePollRequest request)
     {
-        var poll = _pollService.Update(id, request);
+        var isUpdated = _pollService.Update(id, request.Adapt<Poll>());
 
-        return poll is false ? NotFound() : NoContent();
+        if(!isUpdated)
+            return NotFound();
+
+
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete([FromRoute] int id)
     {
         var poll = _pollService.Delete(id);
 
