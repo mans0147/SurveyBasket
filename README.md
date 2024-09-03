@@ -43,7 +43,7 @@
 
 # Installation
 - Clone the repository:
-  -     git clone https://github.com/yourusername/survey-basket.git
+  -     git clone https://github.com/mans0147/survey-basket.git
     
 - Navigate to the project directory
   -     cd survey-basket
