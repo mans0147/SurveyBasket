@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace SurveyBasket.API.Contracts.Validations;
+namespace SurveyBasket.API.Contracts.Polls;
 
-public class PollRequestValidator : AbstractValidator<PollRequest>
+public class LoginRequestValidator : AbstractValidator<PollRequest>
 {
-    public PollRequestValidator()
+    public LoginRequestValidator()
     {
         RuleFor(x => x.Title)
             .NotEmpty()
@@ -26,8 +26,8 @@ public class PollRequestValidator : AbstractValidator<PollRequest>
             .WithName(nameof(PollRequest.EndsAt))
             .WithMessage("{PropertyName} must be greater than or equals start date");
     }
-    
-    
+
+
     private bool HasValidDates(PollRequest pollRequest)
     {
         return pollRequest.EndsAt >= pollRequest.StartsAt;

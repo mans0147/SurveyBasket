@@ -1,5 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using SurveyBasket.API.Persistence;
 using SurveyBasket.API.Services;
 using System.Reflection;
@@ -22,14 +23,16 @@ public static class DependencyInjection
         services
             .AddSwaggerServices()
             .AddMapsterConfig()
-            .AddFluentValidateion();
+            .AddFluentValidateion()
+            .AddAuthConfig();
 
         services.AddScoped<IPollSerivce, PollSerivce>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }
 
-    public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
+    private static IServiceCollection AddSwaggerServices(this IServiceCollection services)
     {
 
         services.AddEndpointsApiExplorer();
@@ -38,7 +41,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddMapsterConfig(this IServiceCollection services)
+    private static IServiceCollection AddMapsterConfig(this IServiceCollection services)
     {
 
         // Add Mapster
@@ -51,11 +54,19 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddFluentValidateion(this IServiceCollection services)
+    private static IServiceCollection AddFluentValidateion(this IServiceCollection services)
     {
         services
             .AddFluentValidationAutoValidation()
             .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuthConfig(this IServiceCollection services)
+    {
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
         return services;
     }
