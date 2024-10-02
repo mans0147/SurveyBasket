@@ -8,3 +8,4 @@ global using SurveyBasket.API.Entities;
 global using SurveyBasket.API.Persistence;
 global using SurveyBasket.API.Services.Interfaces;
 global using SurveyBasket.API.Contracts.Authentication;
+global using Microsoft.Extensions.Options;

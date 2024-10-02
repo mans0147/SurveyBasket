@@ -1,9 +1,13 @@
 ﻿using FluentValidation.AspNetCore;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using SurveyBasket.API.Authentication;
 using SurveyBasket.API.Persistence;
 using SurveyBasket.API.Services;
 using System.Reflection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace SurveyBasket.API;
 
@@ -24,7 +28,7 @@ public static class DependencyInjection
             .AddSwaggerServices()
             .AddMapsterConfig()
             .AddFluentValidateion()
-            .AddAuthConfig();
+            .AddAuthConfig(configuration);
 
         services.AddScoped<IPollSerivce, PollSerivce>();
         services.AddScoped<IAuthService, AuthService>();
@@ -63,10 +67,41 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthConfig(this IServiceCollection services)
+    private static IServiceCollection AddAuthConfig(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        services.AddSingleton<IJwtProvider, JwtProvider>();
+
+        //services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.AddOptions<JwtOptions>()
+            .BindConfiguration(JwtOptions.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        var jwtSettings = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
+        
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(o =>
+        {
+          o.SaveToken = true;
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.Key!)),
+                ValidIssuer = jwtSettings?.Issuer,
+                ValidAudience = jwtSettings?.Audience
+            };
+        });
 
         return services;
     }
